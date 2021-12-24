@@ -30,8 +30,9 @@ int main(int argc, char const *argv[]) {
     } else { //Verificação dos Argumentos
         if (strcmp(argv[1], "help") == 0){
             printf("TapiocaBuilder 1.0\n\n");
-            printf("Build - Build Project \n");
-            printf("Clean - Clean Project\n");
+            printf("build - Build Project \n");
+            printf("clean - Clean Project\n");
+            printf("test - Execute Tests of Project\n");
             printf("\n");
         } else if(strcmp(argv[1],"build") == 0){
             clock_t start = clock();//Inicio da Contagem do Tempo
