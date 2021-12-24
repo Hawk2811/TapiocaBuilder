@@ -29,7 +29,7 @@ int main(int argc, char const *argv[]) {
         return 0;
     } else { //Verificação dos Argumentos
         if (strcmp(argv[1], "help") == 0){
-            printf("TapiocaBuilder 1.0\n\n");
+            printf("TapiocaBuilder 1.5\n\n");
             printf("build - Build Project \n");
             printf("clean - Clean Project\n");
             printf("test - Execute Tests of Project\n");
@@ -65,7 +65,7 @@ int main(int argc, char const *argv[]) {
                 }
             }
         } else if(strcmp(argv[1],"test")== 0){
-            printf(ANSI_COLOR_YELLOW "Started Tests\n" ANSI_COLOR_RESET);
+            printf(ANSI_COLOR_YELLOW "Started Tests" ANSI_COLOR_RESET "\n");
             clock_t start = clock();
             int exitcode = system("./TestScript.sh");
             if (exitcode == 0){
