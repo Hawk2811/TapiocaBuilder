@@ -14,7 +14,7 @@ using namespace std;
 #define ANSI_COLOR_RED     "\x1b[31m"
 #define ANSI_COLOR_GREEN   "\x1b[32m"
 //Outras Cores ANSI
-//#define ANSI_COLOR_YELLOW  "\x1b[33m"
+#define ANSI_COLOR_YELLOW  "\x1b[33m"
 //#define ANSI_COLOR_BLUE    "\x1b[34m"
 //#define ANSI_COLOR_MAGENTA "\x1b[35m"
 //#define ANSI_COLOR_CYAN    "\x1b[36m"
@@ -63,6 +63,20 @@ int main(int argc, char const *argv[]) {
                     
                 }
             }
+        } else if(strcmp(argv[1],"test")== 0){
+            printf(ANSI_COLOR_YELLOW "Started Tests\n" ANSI_COLOR_RESET);
+            clock_t start = clock();
+            int exitcode = system("./TestScript.sh");
+            if (exitcode == 0){
+                clock_t stop = clock();
+                double elapsed = (double)(stop - start) * 1000.0;
+                printf(ANSI_COLOR_GREEN "Test Pass! in %f Miliseconds\n" ANSI_COLOR_RESET, elapsed);
+            } else {
+                clock_t stop = clock();
+                double elapsed = (double)(stop - start) * 1000.0;
+                printf(ANSI_COLOR_RED "Test Failed ! in %f Miliseconds\n" ANSI_COLOR_RESET, elapsed);
+            }
+            
         } else {// Em caso de argumento invalido
             printf("%s: Invalid Command. Try '%s help'\n", argv[0], argv[0]);
             return 0;
