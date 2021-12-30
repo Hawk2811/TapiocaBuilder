@@ -1,5 +1,5 @@
 /*
-* TapiocaBuilder 1.0 for Unix
+* TapiocaBuilder for Unix
 */
 
 //Inclusão das Biblotecas

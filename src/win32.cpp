@@ -1,5 +1,5 @@
 /*
-* TapiocaBuilder 1.0
+* TapiocaBuilder
 * Sistema de Compila��o Via Scripts
 *
 * Para Usar o Programa
