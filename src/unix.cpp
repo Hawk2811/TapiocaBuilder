@@ -8,6 +8,7 @@
 #include <iostream>
 #include <unistd.h>
 #include <time.h>
+#include <cstring>
 
 using namespace std;
 //Configuração de Cores ANSI
