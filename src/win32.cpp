@@ -155,7 +155,20 @@ int main(int argc, char** argv) {
                     resetcolors();
                 }
             }
+            /*
+            Codigo da função de tasks
+            */
+        } else if (strcmp(argv[1],"task") == 0){
+            clock_t start = clock();
+            
+            char taskrunner[13] = "call tasks\\";
+            
+            strcat(taskrunner,argv[2]);
+            
+            int exitcode = system();
+            
         }
+        
         else {//Caso o Argumento for invalido
             printf("%s: Invalid Command. Try '%s help'", argv[0], argv[0]);
             return 0;
