@@ -123,7 +123,7 @@ int main(int argc, char** argv) {
 
                 }
             }
-        } else if(strcmp(argv[1],"test") == 0){
+        } else if(strcmp(argv[1],"test") == 0){//Codigo do sistema de testes
             if (USE_ANSI == true){
                 printf(ANSI_COLOR_YELLOW "Started Tests" ANSI_COLOR_RESET "\n");
             } else {
@@ -160,12 +160,32 @@ int main(int argc, char** argv) {
             */
         } else if (strcmp(argv[1],"task") == 0){
             clock_t start = clock();
-            
-            char taskrunner[13] = "call tasks\\";
-            
-            strcat(taskrunner,argv[2]);
-            
-            int exitcode = system();
+            char taskrunner[13] = "call tasks\\";//chama o script que estiver dentro da pasta tasks no seu projeto
+            string taskname = argv[2]; //guarda oque o usuario digitou em uma variavel para ser usado como nome da task
+            string taskfile = strcat(argv[2],".cmd");//concatena oque o usuario digitou com a extenção ".cmd"
+            string code = strcat(taskrunner,taskfile.c_str()); //junta tudo isso em uma unica variavel
+            int exitcode = system(code.c_str());//Executa e pega o codigo de saida igual as funções de build, clean e test
+            if(exitcode == 0){
+                clock_t stop = clock();
+                double elapsed = (double)(stop - start) * 1000.0;
+                if (USE_ANSI == true){
+                    printf(ANSI_COLOR_GREEN "Task '%s' Complete ! in %f Miliseconds " ANSI_COLOR_RESET,taskname.c_str(), elapsed);
+                } else {
+                    setcolor(2);
+                    printf("Task '%s' Complete ! in %f Miliseconds",taskname.c_str(), elapsed);
+                    resetcolors();
+                }
+            } else {
+                clock_t stop = clock();
+                double elapsed = (double)(stop - start) * 1000.0;                
+                if (USE_ANSI == true){
+                    printf(ANSI_COLOR_RED "Task '%s' Failed ! in %f Miliseconds " ANSI_COLOR_RESET,taskname.c_str(), elapsed);
+                } else {
+                    setcolor(4);
+                    printf("Task '%s' Failed ! in %f Miliseconds ",taskname.c_str(),elapsed);
+                    resetcolors();
+                }
+            }
             
         }
         
