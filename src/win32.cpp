@@ -35,7 +35,7 @@ using namespace std;
 //Fun��es de cor para Prompt do Windows para Windows 8.1/8/7/XP
 void resetcolors();
 void setcolor(WORD color);
-
+string PROG_VERSION = "2.0";
 //Outras Configura��es
 #define CLEAN_ENALED true //Habilitar a Fun��o de Limpeza
 
@@ -46,7 +46,7 @@ int main(int argc, char** argv) {
     }
     else { //Verifica��o dos Argumentos
         if (strcmp(argv[1], "help") == 0) { // Fun��o de Ajuda
-            printf("TapiocaBuilder 1.5\n\n");
+            printf("TapiocaBuilder %s\n\n",PROG_VERSION.c_str());
             printf("build - Build Project \n");
             printf("clean - Clean Project\n");
             printf("test - Execute Tests of Project\n");
@@ -123,7 +123,7 @@ int main(int argc, char** argv) {
 
                 }
             }
-        } else if(strcmp(argv[1],"test") == 0){
+        } else if(strcmp(argv[1],"test") == 0){//Codigo do sistema de testes
             if (USE_ANSI == true){
                 printf(ANSI_COLOR_YELLOW "Started Tests" ANSI_COLOR_RESET "\n");
             } else {
@@ -155,7 +155,40 @@ int main(int argc, char** argv) {
                     resetcolors();
                 }
             }
+            /*
+            Codigo da função de tasks
+            */
+        } else if (strcmp(argv[1],"task") == 0){
+            clock_t start = clock();
+            char taskrunner[13] = "call tasks\\";//chama o script que estiver dentro da pasta tasks no seu projeto
+            string taskname = argv[2]; //guarda oque o usuario digitou em uma variavel para ser usado como nome da task
+            string taskfile = strcat(argv[2],".cmd");//concatena oque o usuario digitou com a extenção ".cmd"
+            string code = strcat(taskrunner,taskfile.c_str()); //junta tudo isso em uma unica variavel
+            int exitcode = system(code.c_str());//Executa e pega o codigo de saida igual as funções de build, clean e test
+            if(exitcode == 0){
+                clock_t stop = clock();
+                double elapsed = (double)(stop - start) * 1000.0;
+                if (USE_ANSI == true){
+                    printf(ANSI_COLOR_GREEN "Task '%s' Complete ! in %f Miliseconds\n" ANSI_COLOR_RESET,taskname.c_str(), elapsed);
+                } else {
+                    setcolor(2);
+                    printf("Task '%s' Complete ! in %f Miliseconds\n",taskname.c_str(), elapsed);
+                    resetcolors();
+                }
+            } else {
+                clock_t stop = clock();
+                double elapsed = (double)(stop - start) * 1000.0;                
+                if (USE_ANSI == true){
+                    printf(ANSI_COLOR_RED "Task '%s' Failed ! in %f Miliseconds\n" ANSI_COLOR_RESET,taskname.c_str(), elapsed);
+                } else {
+                    setcolor(4);
+                    printf("Task '%s' Failed ! in %f Miliseconds\n",taskname.c_str(),elapsed);
+                    resetcolors();
+                }
+            }
+            
         }
+        
         else {//Caso o Argumento for invalido
             printf("%s: Invalid Command. Try '%s help'", argv[0], argv[0]);
             return 0;

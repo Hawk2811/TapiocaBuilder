@@ -20,7 +20,7 @@ using namespace std;
 //#define ANSI_COLOR_MAGENTA "\x1b[35m"
 //#define ANSI_COLOR_CYAN    "\x1b[36m"
 #define ANSI_COLOR_RESET   "\x1b[0m"
-
+string PROG_VERSION = "2.0";
 //Outras Configurações
 #define CLEAN_ENALED true //Habilitar Funcão de Limpeza
 
@@ -30,7 +30,7 @@ int main(int argc, char const *argv[]) {
         return 0;
     } else { //Verificação dos Argumentos
         if (strcmp(argv[1], "help") == 0){
-            printf("TapiocaBuilder 1.5\n\n");
+            printf("TapiocaBuilder %s\n\n",PROG_VERSION.c_str());
             printf("build - Build Project \n");
             printf("clean - Clean Project\n");
             printf("test - Execute Tests of Project\n");
@@ -65,7 +65,7 @@ int main(int argc, char const *argv[]) {
                     
                 }
             }
-        } else if(strcmp(argv[1],"test")== 0){
+        } else if(strcmp(argv[1],"test")== 0){//Codigo do sistema de testes
             printf(ANSI_COLOR_YELLOW "Started Tests" ANSI_COLOR_RESET "\n");
             clock_t start = clock();
             int exitcode = system("./TestScript.sh");
@@ -78,11 +78,34 @@ int main(int argc, char const *argv[]) {
                 double elapsed = (double)(stop - start) * 1000.0;
                 printf(ANSI_COLOR_RED "Test Failed ! in %f Miliseconds\n" ANSI_COLOR_RESET, elapsed);
             }
+            /*
+            Codigo da função de tasks
+            */
+        } else if (strcmp(argv[1],"task") == 0){
+            clock_t start = clock();
+            char taskrunner[13] = "./tasks/";//chama o script que estiver dentro da pasta tasks no seu projeto
+            string taskname = argv[2]; //guarda oque o usuario digitou em uma variavel para ser usado como nome da task
+            //concatena oque o usuario digitou com a extenção ".sh"
+            string taskfile;     
+            string buf(argv[2]); 
+            taskfile = buf.append(".sh");
+            //e coloca na variavel taskfile
+            string code = strcat(taskrunner,taskfile.c_str()); //junta tudo isso em uma unica variavel
+            int exitcode = system(code.c_str());//Executa e pega o codigo de saida igual as funções de build, clean e test
+            if(exitcode == 0){
+                clock_t stop = clock();
+                double elapsed = (double)(stop - start) * 1000.0;
+                printf(ANSI_COLOR_GREEN "Task '%s' Complete ! in %f Miliseconds\n" ANSI_COLOR_RESET,taskname.c_str(), elapsed);
+            } else {
+                clock_t stop = clock();
+                double elapsed = (double)(stop - start) * 1000.0;                
+                printf(ANSI_COLOR_RED "Task '%s' Failed ! in %f Miliseconds\n" ANSI_COLOR_RESET,taskname.c_str(), elapsed);
+            }
             
         } else {// Em caso de argumento invalido
             printf("%s: Invalid Command. Try '%s help'\n", argv[0], argv[0]);
             return 0;
-        }
-    } 
-    return 0;
+        } 
+    }
 }
+
