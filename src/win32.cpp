@@ -169,20 +169,20 @@ int main(int argc, char** argv) {
                 clock_t stop = clock();
                 double elapsed = (double)(stop - start) * 1000.0;
                 if (USE_ANSI == true){
-                    printf(ANSI_COLOR_GREEN "Task '%s' Complete ! in %f Miliseconds " ANSI_COLOR_RESET,taskname.c_str(), elapsed);
+                    printf(ANSI_COLOR_GREEN "Task '%s' Complete ! in %f Miliseconds\n" ANSI_COLOR_RESET,taskname.c_str(), elapsed);
                 } else {
                     setcolor(2);
-                    printf("Task '%s' Complete ! in %f Miliseconds",taskname.c_str(), elapsed);
+                    printf("Task '%s' Complete ! in %f Miliseconds\n",taskname.c_str(), elapsed);
                     resetcolors();
                 }
             } else {
                 clock_t stop = clock();
                 double elapsed = (double)(stop - start) * 1000.0;                
                 if (USE_ANSI == true){
-                    printf(ANSI_COLOR_RED "Task '%s' Failed ! in %f Miliseconds " ANSI_COLOR_RESET,taskname.c_str(), elapsed);
+                    printf(ANSI_COLOR_RED "Task '%s' Failed ! in %f Miliseconds\n" ANSI_COLOR_RESET,taskname.c_str(), elapsed);
                 } else {
                     setcolor(4);
-                    printf("Task '%s' Failed ! in %f Miliseconds ",taskname.c_str(),elapsed);
+                    printf("Task '%s' Failed ! in %f Miliseconds\n",taskname.c_str(),elapsed);
                     resetcolors();
                 }
             }
