@@ -35,7 +35,7 @@ using namespace std;
 //Fun��es de cor para Prompt do Windows para Windows 8.1/8/7/XP
 void resetcolors();
 void setcolor(WORD color);
-
+string PROG_VERSION = "2.0";
 //Outras Configura��es
 #define CLEAN_ENALED true //Habilitar a Fun��o de Limpeza
 
@@ -46,7 +46,7 @@ int main(int argc, char** argv) {
     }
     else { //Verifica��o dos Argumentos
         if (strcmp(argv[1], "help") == 0) { // Fun��o de Ajuda
-            printf("TapiocaBuilder 1.5\n\n");
+            printf("TapiocaBuilder %s\n\n",PROG_VERSION.c_str());
             printf("build - Build Project \n");
             printf("clean - Clean Project\n");
             printf("test - Execute Tests of Project\n");

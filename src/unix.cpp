@@ -20,7 +20,7 @@ using namespace std;
 //#define ANSI_COLOR_MAGENTA "\x1b[35m"
 //#define ANSI_COLOR_CYAN    "\x1b[36m"
 #define ANSI_COLOR_RESET   "\x1b[0m"
-
+string PROG_VERSION = "2.0";
 //Outras Configurações
 #define CLEAN_ENALED true //Habilitar Funcão de Limpeza
 
@@ -30,7 +30,7 @@ int main(int argc, char const *argv[]) {
         return 0;
     } else { //Verificação dos Argumentos
         if (strcmp(argv[1], "help") == 0){
-            printf("TapiocaBuilder 1.5\n\n");
+            printf("TapiocaBuilder %s\n\n",PROG_VERSION.c_str());
             printf("build - Build Project \n");
             printf("clean - Clean Project\n");
             printf("test - Execute Tests of Project\n");
