@@ -49,7 +49,8 @@ int main(int argc, char** argv) {
             printf("TapiocaBuilder %s\n\n",PROG_VERSION.c_str());
             printf("build - Build Project \n");
             printf("clean - Clean Project\n");
-            printf("test - Execute Tests of Project\n");
+            printf("test - Execute Project Tests\n");
+            printf("task taskName - perform selected task\n");
             printf("\n");
         }
         else if (strcmp(argv[1], "build") == 0) { //Fun��o de Build

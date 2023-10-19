@@ -34,6 +34,7 @@ int main(int argc, char const *argv[]) {
             printf("build - Build Project \n");
             printf("clean - Clean Project\n");
             printf("test - Execute Tests of Project\n");
+            printf("task taskName - perform selected task\n");
             printf("\n");
         } else if(strcmp(argv[1],"build") == 0){
             clock_t start = clock();//Inicio da Contagem do Tempo
