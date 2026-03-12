@@ -3,20 +3,41 @@ import sys
 import argparse
 
 
-PROGRAM_VERSION = "1.0.0"
+PROGRAM_VERSION = "1.0"
+
+
+def checkProject():
+    if os.name == "nt":
+        if os.path.isfile(".\\BuildScript.cmd") == False:
+            print("No TapiocaBuilder Project Found!")
+            sys.exit(1)
+        else:
+            pass
+    else:
+        if os.path.isfile("./BuildScript.cmd") == False:
+            print("No TapiocaBuilder Project Found!")
+            sys.exit(1)
+        else:
+            pass
 
 
 def build(args):
+    checkProject()
     if os.name == "nt":
         os.system(".\\BuildScript.cmd")
+        print("Completed Script Execution!")
     else:
         os.system("./BuildScript.sh")
+        print("Completed Script Execution!")
 
 def clean(args):
+    checkProject()
     if os.name == "nt":
         os.system(".\\CleanScript.cmd")
+        print("Completed Script Execution!")
     else:
         os.system("./CleanScript.sh")
+        print("Completed Script Execution!")
 
 commands = {
     "build": build,
