@@ -25,8 +25,8 @@ def checkProjectLegacy():
 
 
 def build(args):
-    if os.path.isfile("./TapiocaBuilder"):
-        engine.run_make_engine("TapiocaBuilder","build")
+    if os.path.isfile("./TapiocaBuilder.mak"):
+        engine.run_make_engine("TapiocaBuilder.mak","build")
     else:
         checkProjectLegacy()
         if os.name == "nt":
@@ -37,8 +37,8 @@ def build(args):
             print("Completed Script Execution!")
 
 def clean(args):
-    if os.path.isfile("./TapiocaBuilder"):
-        engine.run_make_engine("TapiocaBuilder","clean")
+    if os.path.isfile("./TapiocaBuilder.mak"):
+        engine.run_make_engine("TapiocaBuilder.mak","clean")
     else:
         checkProjectLegacy()
         if os.name == "nt":
