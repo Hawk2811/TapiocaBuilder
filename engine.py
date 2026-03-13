@@ -60,22 +60,15 @@ def get_executable_ext():
     return ""  # If Unix-like(macOS, Linux,FreeBSD)
 
 def cmd_copy(line):
-
     inside = line.split('"')
-
     src = replace_vars(inside[1])
     dst = replace_vars(inside[3])
-
     src = os.path.normpath(src)
     dst = os.path.normpath(dst)
-
     dirpath = os.path.dirname(dst)
-
     if dirpath != "":
         os.makedirs(dirpath, exist_ok=True)
-
     print("[COPY]", src, "->", dst)
-
     shutil.copy2(src, dst)
 
 def cmd_write(line):
@@ -141,8 +134,7 @@ def cmd_echo(line):
 
 
 def execute(target):
-
-
+    
     if target not in targets:
         print("No valid TapiocaBuilder Project Found!", target)
         return
@@ -152,19 +144,14 @@ def execute(target):
     for line in cmds:
 
         line = replace_vars(line)
-
         if line.startswith("copy"):
             cmd_copy(line[5:])
-
         elif line.startswith("write"):
             cmd_write(line)
-
         elif line.startswith("run"):
             cmd_run(line)
-
         elif line.startswith("compile-cxx"):
             cmd_compile_cxx(line)
-
         elif line.startswith("compile-c"):
             cmd_compile_c(line)
         elif line.startswith("echo"):
