@@ -14,7 +14,7 @@ def checkProject():
         else:
             pass
     else:
-        if os.path.isfile("./BuildScript.cmd") == False:
+        if os.path.isfile("./BuildScript.sh") == False:
             print("No TapiocaBuilder Project Found!")
             sys.exit(1)
         else:
