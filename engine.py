@@ -131,10 +131,14 @@ def cmd_compile_c(line):
 def cmd_echo(line):
     text = line.split('"')[1]
     print(text)
-
+def cmd_mkdir(line):
+    directory = line.split('"')[1]
+    directory = normalize_path(directory)
+    print("[MKDIR] " + directory)
+    os.mkdir(directory)
 
 def execute(target):
-    
+
     if target not in targets:
         print("No valid TapiocaBuilder Project Found!", target)
         return
@@ -156,6 +160,8 @@ def execute(target):
             cmd_compile_c(line)
         elif line.startswith("echo"):
             cmd_echo(line)
+        elif line.startswith("mkdir"):
+            cmd_mkdir(line)
 
 
 def run_make_engine(file,cli_target):
