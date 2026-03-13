@@ -3,13 +3,13 @@
 
 import os
 import sys
+import engine
 import argparse
-
 
 PROGRAM_VERSION = "1.0"
 
 
-def checkProject():
+def checkProjectLegacy():
     if os.name == "nt":
         if os.path.isfile(".\\BuildScript.cmd") == False:
             print("No TapiocaBuilder Project Found!")
@@ -25,22 +25,28 @@ def checkProject():
 
 
 def build(args):
-    checkProject()
-    if os.name == "nt":
-        os.system(".\\BuildScript.cmd")
-        print("Completed Script Execution!")
+    if os.path.isfile("./TapiocaBuilder"):
+        engine.run_make_engine("TapiocaBuilder","build")
     else:
-        os.system("./BuildScript.sh")
-        print("Completed Script Execution!")
+        checkProjectLegacy()
+        if os.name == "nt":
+            os.system(".\\BuildScript.cmd")
+            print("Completed Script Execution!")
+        else:
+            os.system("./BuildScript.sh")
+            print("Completed Script Execution!")
 
 def clean(args):
-    checkProject()
-    if os.name == "nt":
-        os.system(".\\CleanScript.cmd")
-        print("Completed Script Execution!")
+    if os.path.isfile("./TapiocaBuilder"):
+        engine.run_make_engine("TapiocaBuilder","clean")
     else:
-        os.system("./CleanScript.sh")
-        print("Completed Script Execution!")
+        checkProjectLegacy()
+        if os.name == "nt":
+            os.system(".\\CleanScript.cmd")
+            print("Completed Script Execution!")
+        else:
+            os.system("./CleanScript.sh")
+            print("Completed Script Execution!")
 
 commands = {
     "build": build,

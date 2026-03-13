@@ -19,36 +19,39 @@ def read_file(path):
     
 
 def parse_file(file):
+
     global current_target
-    with open(file, "r",encoding="utf-8") as f:
-        for line in f:
-            line = line.strip()
+
+    with open(file, "r", encoding="utf-8") as f:
+        for raw_line in f:
+            line = raw_line.strip()
             if not line or line.startswith("#"):
                 continue
+            # variables
             if line.startswith("$") and "=" in line:
-                name, value = line.split("=",1)
+                name, value = line.split("=", 1)
                 name = name.strip()
                 value = value.strip()
+
                 if value.startswith("read("):
                     path = value.split('"')[1]
                     variables[name] = read_file(path)
                 else:
                     variables[name] = value
-            continue
-
-
-        if line.startswith(":"):
-            current_target = line[1:]
-            targets[current_target] = []
-        
-        if current_target:
-            targets[current_target].append(line)
-
+                continue
+            # targets
+            if line.startswith(":"):
+                current_target = line[1:].strip()
+                targets[current_target] = []
+                continue
+            # command inside target
+            if current_target is not None:
+                targets[current_target].append(line)
 
 def replace_vars(text):
     for k,v in variables.items():
         text = text.replace(k,v)
-
+    return text
 def cmd_copy(args):
     src,dst = args.split(" ")
 
@@ -89,7 +92,10 @@ def cmd_compile_cxx(line):
     dst = replace_vars(inside[3])
 
     compiler = variables.get("$CXX")
+    dirpath = os.path.dirname(dst)
 
+    if dirpath:
+        os.makedirs(dirpath, exist_ok=True)
     print("[CXX]", src)
 
     subprocess.run(f"{compiler} {src} -o {dst}", shell=True)
@@ -97,33 +103,39 @@ def cmd_compile_cxx(line):
 def cmd_compile_c(line):
 
     inside = line.split('"')
-
     pattern = replace_vars(inside[1])
     dst = replace_vars(inside[3])
-
     compiler = variables.get("$CC", "gcc")
-
     files = glob.glob(pattern)
+    is_file = os.path.splitext(dst)[1] != ""
+    if is_file:
+        dirpath = os.path.dirname(dst)
+
+        if dirpath:
+            os.makedirs(dirpath, exist_ok=True)
+
+        print("[CC]", pattern, "->", dst)
+
+        subprocess.run(f"{compiler} {pattern} -o {dst}", shell=True)
+
+        return
 
     os.makedirs(dst, exist_ok=True)
-
     for f in files:
-
         name = os.path.basename(f).replace(".c", ".o")
-
         out = os.path.join(dst, name)
-
         print("[CC]", f)
-
-        subprocess.run(f"{compiler} -c {f} -o {out}", shell=True)
+        subprocess.run(f"{compiler} {f} -o {out}", shell=True)
 
 def execute(target):
 
-    cmds = targets.get(target)
 
-    if not cmds:
-        print("No valid TapiocaBuilder project")
+    if target not in targets:
+        print("Target não encontrado:", target)
+        print("Targets disponíveis:", list(targets.keys()))
         return
+
+    cmds = targets[target]
 
     for line in cmds:
 
@@ -145,6 +157,6 @@ def execute(target):
             cmd_compile_c(line)
 
 
-def run_make_engine(file,target):
+def run_make_engine(file,cli_target):
     parse_file(file)
-    execute(target)
+    execute(cli_target)
