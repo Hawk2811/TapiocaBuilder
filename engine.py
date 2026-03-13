@@ -60,37 +60,49 @@ def get_executable_ext():
     return ""  # If Unix-like(macOS, Linux, FreeBSD)
 
 def cmd_copy(line):
-    inside = line.split('"')
-    src = replace_vars(inside[1])
-    dst = replace_vars(inside[3])
-    src = os.path.normpath(src)
-    dst = os.path.normpath(dst)
-    dirpath = os.path.dirname(dst)
-    if dirpath != "":
-        os.makedirs(dirpath, exist_ok=True)
-    print("[COPY]", src, "->", dst)
-    shutil.copy2(src, dst)
-
+    try:
+        inside = line.split('"')
+        src = replace_vars(inside[1])
+        dst = replace_vars(inside[3])
+        src = os.path.normpath(src)
+        dst = os.path.normpath(dst)
+        dirpath = os.path.dirname(dst)
+        if dirpath != "":
+            os.makedirs(dirpath, exist_ok=True)
+        print("[COPY]", src, "->", dst)
+        shutil.copy2(src, dst)
+    except Exception as ex:
+        print(f"[ERROR] Failed to copy {src} error: {ex}")
+        exit(1)
 def cmd_write(line):
-    inside = line.split('"')
-    content = replace_vars(inside[1])
-    file = replace_vars(inside[3])
-    file = os.path.normpath(file)
-    dirpath = os.path.dirname(file)
+    try:
+        inside = line.split('"')
+        content = replace_vars(inside[1])
+        file = replace_vars(inside[3])
+        file = os.path.normpath(file)
+        dirpath = os.path.dirname(file)
 
-    if dirpath != "":
-        os.makedirs(dirpath, exist_ok=True)
-    print("[WRITE]", file)
-    with open(file, "w", encoding="utf-8") as f:
-        f.write(content)
-
+        if dirpath != "":
+            os.makedirs(dirpath, exist_ok=True)
+        print("[WRITE]", file)
+        with open(file, "w", encoding="utf-8") as f:
+            f.write(content)
+    except Exception as ex:
+        print(f"[ERROR] Failed to write {file} error: {ex}")
+        exit(1)
 
 def cmd_run(line):
-    cmd = line.split('"')[1]
-    cmd = replace_vars(cmd)
-    print("[RUN]", cmd)
-    subprocess.run(cmd, shell=True)
-
+    try:
+        cmd = line.split('"')[1]
+        cmd = replace_vars(cmd)
+        print("[RUN]", cmd)
+        result = subprocess.run(cmd, shell=True)
+        if result.returncode != 0:
+            print(f"[ERROR] Failed to execute {cmd} error code: {result.returncode}")
+            exit()
+    except Exception as ex:
+        print(f"[ERROR] Failed to execute {cmd} error: {ex}")
+        exit(1)
 def cmd_compile_cxx(line):
 
     inside = line.split('"')
@@ -127,7 +139,7 @@ def cmd_compile_c(line):
 
     if len(inside) > 4:
         extra_args = replace_vars(inside[4].strip())
-        
+
     compiler = variables.get("$CC",)
     ext = get_executable_ext()
 
@@ -146,11 +158,14 @@ def cmd_echo(line):
     text = line.split('"')[1]
     print(text)
 def cmd_mkdir(line):
-    directory = line.split('"')[1]
-    directory = normalize_path(directory)
-    print("[MKDIR] " + directory)
-    os.mkdir(directory)
-
+    try: 
+        directory = line.split('"')[1]
+        directory = normalize_path(directory)
+        print("[MKDIR] " + directory)
+        os.mkdir(directory)
+    except Exception as ex:
+        print(f"[ERROR] Failed to create folder {directory} error: {ex}")
+        exit(1)
 def execute(target):
 
     if target not in targets:
