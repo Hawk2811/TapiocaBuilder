@@ -57,7 +57,7 @@ def replace_vars(text):
 def get_executable_ext():
     if os.name == "nt":  # if Windows
         return ".exe"
-    return ""  # If Unix-like(macOS, Linux,FreeBSD)
+    return ""  # If Unix-like(macOS, Linux, FreeBSD)
 
 def cmd_copy(line):
     inside = line.split('"')
@@ -98,6 +98,10 @@ def cmd_compile_cxx(line):
     dst = replace_vars(inside[3])
     src = normalize_path(src)
     dst = normalize_path(dst)
+    extra_args = ""
+
+    if len(inside) > 4:
+        extra_args = replace_vars(inside[4].strip())
 
     compiler = variables.get("$CXX")
     ext = get_executable_ext()
@@ -108,7 +112,10 @@ def cmd_compile_cxx(line):
     if dirpath:
         os.makedirs(dirpath, exist_ok=True)
     print("[CXX]", src, "->", dst)
-    subprocess.run(f"{compiler} \"{src}\" -o \"{dst}\"", shell=True)
+    result = subprocess.run(f"{compiler} \"{src}\" -o \"{dst}\" {extra_args}", shell=True)
+    if result.returncode != 0:
+        print("[ERROR] Build Error in", src)
+        exit(1)  
 
 def cmd_compile_c(line):
     inside = line.split('"')
@@ -116,7 +123,11 @@ def cmd_compile_c(line):
     dst = replace_vars(inside[3])
     src = normalize_path(src)
     dst = normalize_path(dst)
+    extra_args = ""
 
+    if len(inside) > 4:
+        extra_args = replace_vars(inside[4].strip())
+        
     compiler = variables.get("$CC",)
     ext = get_executable_ext()
 
@@ -126,7 +137,10 @@ def cmd_compile_c(line):
     if dirpath:
         os.makedirs(dirpath, exist_ok=True)
     print("[CC]", src, "->", dst)
-    subprocess.run(f"{compiler} \"{src}\" -o \"{dst}\"", shell=True)
+    result = subprocess.run(f"{compiler} \"{src}\" -o \"{dst}\" {extra_args}", shell=True)
+    if result.returncode != 0:
+        print("[ERROR] Build Error in", src)
+        exit(1)
 
 def cmd_echo(line):
     text = line.split('"')[1]
