@@ -3,6 +3,7 @@
 
 
 import os
+import sys
 import shutil
 import subprocess
 
@@ -73,7 +74,7 @@ def cmd_copy(line):
         shutil.copy2(src, dst)
     except Exception as ex:
         print(f"[ERROR] Failed to copy {src} error: {ex}")
-        exit(1)
+        sys.exit(1)
 def cmd_write(line):
     try:
         inside = line.split('"')
@@ -89,7 +90,7 @@ def cmd_write(line):
             f.write(content)
     except Exception as ex:
         print(f"[ERROR] Failed to write {file} error: {ex}")
-        exit(1)
+        sys.exit(1)
 
 def cmd_run(line):
     try:
@@ -99,10 +100,10 @@ def cmd_run(line):
         result = subprocess.run(cmd, shell=True)
         if result.returncode != 0:
             print(f"[ERROR] Failed to execute {cmd} error code: {result.returncode}")
-            exit(1)
+            sys.exit(1)
     except Exception as ex:
         print(f"[ERROR] Failed to execute {cmd} error: {ex}")
-        exit(1)
+        sys.exit(1)
 def cmd_compile_cxx(line):
 
     inside = line.split('"')
@@ -118,7 +119,7 @@ def cmd_compile_cxx(line):
     compiler = variables.get("$CXX")
     if compiler == None:
         print("[ERROR] C++ Compiler not found!")
-        exit(1)
+        sys.exit(1)
     ext = get_executable_ext()
     # Add extension automatically if don't have one.
     if os.path.splitext(dst)[1] == "":
@@ -130,7 +131,7 @@ def cmd_compile_cxx(line):
     result = subprocess.run(f"{compiler} \"{src}\" -o \"{dst}\" {extra_args}", shell=True)
     if result.returncode != 0:
         print("[ERROR] Build Error in", src)
-        exit(1)  
+        sys.exit(1)  
 
 def cmd_compile_c(line):
     inside = line.split('"')
@@ -158,7 +159,7 @@ def cmd_compile_c(line):
     result = subprocess.run(f"{compiler} \"{src}\" -o \"{dst}\" {extra_args}", shell=True)
     if result.returncode != 0:
         print("[ERROR] Build Error in", src)
-        exit(1)
+        sys.exit(1)
 
 def cmd_echo(line):
     text = line.split('"')[1]
@@ -171,7 +172,7 @@ def cmd_mkdir(line):
         os.mkdir(directory)
     except Exception as ex:
         print(f"[ERROR] Failed to create folder {directory} error: {ex}")
-        exit(1)
+        sys.exit(1)
 def execute(target):
 
     if target not in targets:
