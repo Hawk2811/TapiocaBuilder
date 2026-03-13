@@ -99,7 +99,7 @@ def cmd_run(line):
         result = subprocess.run(cmd, shell=True)
         if result.returncode != 0:
             print(f"[ERROR] Failed to execute {cmd} error code: {result.returncode}")
-            exit()
+            exit(1)
     except Exception as ex:
         print(f"[ERROR] Failed to execute {cmd} error: {ex}")
         exit(1)
@@ -116,6 +116,9 @@ def cmd_compile_cxx(line):
         extra_args = replace_vars(inside[4].strip())
 
     compiler = variables.get("$CXX")
+    if compiler == None:
+        print("[ERROR] C++ Compiler not found!")
+        exit(1)
     ext = get_executable_ext()
     # Add extension automatically if don't have one.
     if os.path.splitext(dst)[1] == "":
@@ -141,6 +144,9 @@ def cmd_compile_c(line):
         extra_args = replace_vars(inside[4].strip())
 
     compiler = variables.get("$CC",)
+    if compiler == None:
+        print("[ERROR] C Compiler not found!")
+        exit(1)
     ext = get_executable_ext()
 
     if os.path.splitext(dst)[1] == "":
