@@ -52,6 +52,12 @@ def replace_vars(text):
     for k,v in variables.items():
         text = text.replace(k,v)
     return text
+
+def get_executable_ext():
+    if os.name == "nt":  # if Windows
+        return ".exe"
+    return ""  # If Unix-like(macOS, Linux,FreeBSD)
+
 def cmd_copy(args):
     src,dst = args.split(" ")
 
@@ -77,62 +83,47 @@ def cmd_write(line):
 
 def cmd_run(line):
     cmd = line.split('"')[1]
-
     cmd = replace_vars(cmd)
-
     print("[RUN]", cmd)
-
     subprocess.run(cmd, shell=True)
 
 def cmd_compile_cxx(line):
 
     inside = line.split('"')
-
     src = replace_vars(inside[1])
     dst = replace_vars(inside[3])
 
     compiler = variables.get("$CXX")
+    ext = get_executable_ext()
+    # Add extension automatically if don't have one.
+    if os.path.splitext(dst)[1] == "":
+        dst = dst + ext
     dirpath = os.path.dirname(dst)
-
     if dirpath:
         os.makedirs(dirpath, exist_ok=True)
-    print("[CXX]", src)
-
-    subprocess.run(f"{compiler} {src} -o {dst}", shell=True)
+    print("[CXX]", src, "->", dst)
+    subprocess.run(f"{compiler} \"{src}\" -o \"{dst}\"", shell=True)
 
 def cmd_compile_c(line):
-
     inside = line.split('"')
-    pattern = replace_vars(inside[1])
+    src = replace_vars(inside[1])
     dst = replace_vars(inside[3])
-    compiler = variables.get("$CC", "gcc")
-    files = glob.glob(pattern)
-    is_file = os.path.splitext(dst)[1] != ""
-    if is_file:
-        dirpath = os.path.dirname(dst)
+    compiler = variables.get("$CC",)
+    ext = get_executable_ext()
 
-        if dirpath:
-            os.makedirs(dirpath, exist_ok=True)
-
-        print("[CC]", pattern, "->", dst)
-
-        subprocess.run(f"{compiler} {pattern} -o {dst}", shell=True)
-
-        return
-
-    os.makedirs(dst, exist_ok=True)
-    for f in files:
-        name = os.path.basename(f).replace(".c", ".o")
-        out = os.path.join(dst, name)
-        print("[CC]", f)
-        subprocess.run(f"{compiler} {f} -o {out}", shell=True)
+    if os.path.splitext(dst)[1] == "":
+        dst = dst + ext
+    dirpath = os.path.dirname(dst)
+    if dirpath:
+        os.makedirs(dirpath, exist_ok=True)
+    print("[CC]", src, "->", dst)
+    subprocess.run(f"{compiler} \"{src}\" -o \"{dst}\"", shell=True)
 
 def execute(target):
 
 
     if target not in targets:
-        print("Target não encontrado:", target)
-        print("Targets disponíveis:", list(targets.keys()))
+        print("No valid TapiocaBuilder Project Found!", target)
         return
 
     cmds = targets[target]
