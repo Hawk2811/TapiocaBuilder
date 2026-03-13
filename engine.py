@@ -3,7 +3,6 @@
 
 
 import os
-import glob
 import shutil
 import subprocess
 
@@ -17,6 +16,8 @@ def read_file(path):
     with open(path, "r",encoding="utf-8") as f:
         return f.read().strip()
     
+def normalize_path(path):
+    return os.path.normpath(path)    
 
 def parse_file(file):
 
@@ -58,26 +59,36 @@ def get_executable_ext():
         return ".exe"
     return ""  # If Unix-like(macOS, Linux,FreeBSD)
 
-def cmd_copy(args):
-    src,dst = args.split(" ")
+def cmd_copy(line):
 
-    src = replace_vars(src)
-    dst = replace_vars(dst)
+    inside = line.split('"')
 
-    os.makedirs(os.path.dirname(dst), exist_ok=True)
-    print("[COPY]" + src + "->" + dst)
+    src = replace_vars(inside[1])
+    dst = replace_vars(inside[3])
 
-    shutil.copy2(src,dst)
+    src = os.path.normpath(src)
+    dst = os.path.normpath(dst)
+
+    dirpath = os.path.dirname(dst)
+
+    if dirpath != "":
+        os.makedirs(dirpath, exist_ok=True)
+
+    print("[COPY]", src, "->", dst)
+
+    shutil.copy2(src, dst)
 
 def cmd_write(line):
-    parts = line.split(" ")
-    content = replace_vars(parts[1])
-    file = replace_vars(parts[2])
+    inside = line.split('"')
+    content = replace_vars(inside[1])
+    file = replace_vars(inside[3])
+    file = os.path.normpath(file)
+    dirpath = os.path.dirname(file)
 
-    os.makedirs(os.path.dirname(file),exist_ok=True)
-    
+    if dirpath != "":
+        os.makedirs(dirpath, exist_ok=True)
     print("[WRITE]", file)
-    with open(file,"w",encoding="utf-8") as f:
+    with open(file, "w", encoding="utf-8") as f:
         f.write(content)
 
 
@@ -92,6 +103,8 @@ def cmd_compile_cxx(line):
     inside = line.split('"')
     src = replace_vars(inside[1])
     dst = replace_vars(inside[3])
+    src = normalize_path(src)
+    dst = normalize_path(dst)
 
     compiler = variables.get("$CXX")
     ext = get_executable_ext()
@@ -108,6 +121,9 @@ def cmd_compile_c(line):
     inside = line.split('"')
     src = replace_vars(inside[1])
     dst = replace_vars(inside[3])
+    src = normalize_path(src)
+    dst = normalize_path(dst)
+
     compiler = variables.get("$CC",)
     ext = get_executable_ext()
 
@@ -118,6 +134,11 @@ def cmd_compile_c(line):
         os.makedirs(dirpath, exist_ok=True)
     print("[CC]", src, "->", dst)
     subprocess.run(f"{compiler} \"{src}\" -o \"{dst}\"", shell=True)
+
+def cmd_echo(line):
+    text = line.split('"')[1]
+    print(text)
+
 
 def execute(target):
 
@@ -146,6 +167,8 @@ def execute(target):
 
         elif line.startswith("compile-c"):
             cmd_compile_c(line)
+        elif line.startswith("echo"):
+            cmd_echo(line)
 
 
 def run_make_engine(file,cli_target):
