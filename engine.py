@@ -140,7 +140,7 @@ def cmd_mkdir(line):
 def execute(target):
 
     if target not in targets:
-        print("No valid TapiocaBuilder Project Found!", target)
+        print("No Target Found!", target)
         return
 
     cmds = targets[target]
